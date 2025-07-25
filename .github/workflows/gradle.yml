@@ -1,0 +1,32 @@
+name: Build JAR with Gradle
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up JDK 8
+        uses: actions/setup-java@v3
+        with:
+          java-version: '8'
+          distribution: 'temurin'
+
+      - name: Grant permission to Gradle Wrapper
+        run: chmod +x ./gradlew
+
+      - name: Build project with Gradle
+        run: ./gradlew clean build
+
+      - name: Upload JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: kafka-mirror-tool
+          path: build/libs/*.jar
